@@ -1,6 +1,5 @@
 package br.com.raulalvesre.petshopauthservice.models;
 
-import br.com.raulalvesre.petshopauthservice.dtos.UserRegistrationRequest;
 import br.com.raulalvesre.petshopauthservice.enums.State;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,22 +67,6 @@ public class User {
     private LocalDateTime creationDate = LocalDateTime.now();
 
     private boolean enabled;
-
-    public User(UserRegistrationRequest userRegistrationRequest, Role role) {
-        this.role = role;
-        this.name = userRegistrationRequest.getName();
-        this.email = userRegistrationRequest.getEmail();
-        this.password = userRegistrationRequest.getPassword();
-        this.cpf = userRegistrationRequest.getCpf();
-        this.state = userRegistrationRequest.getAddress().getState();
-        this.address = userRegistrationRequest.getAddress().getAddress();
-        this.neighbourhood = userRegistrationRequest.getAddress().getNeighborhood();
-        this.complement = userRegistrationRequest.getAddress().getComplement();
-        this.number = userRegistrationRequest.getAddress().getNumber();
-        this.postalCode = userRegistrationRequest.getAddress().getPostalCode();
-        this.phone = userRegistrationRequest.getPhone();
-        this.birthDate = userRegistrationRequest.getBirthDate();
-    }
 
     public String getRoleName() {
         return this.role.getName();
