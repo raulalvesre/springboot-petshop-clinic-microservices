@@ -1,6 +1,6 @@
 package br.com.raulalvesre.petshopauthservice.exceptions;
 
-import br.com.raulalvesre.petshopcustomerservice.dtos.ErrorResponse;
+import br.com.raulalvesre.petshopauthservice.dtos.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
