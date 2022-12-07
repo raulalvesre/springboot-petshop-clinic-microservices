@@ -2,9 +2,8 @@ package br.com.raulalvesre.petshopvetsservice.models;
 
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianForm;
 import br.com.raulalvesre.petshopvetsservice.enums.State;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Veterinarian {
@@ -29,6 +29,9 @@ public class Veterinarian {
 
     @NotEmpty
     private String email;
+
+    @NotEmpty
+    private String password;
 
     @NotEmpty
     private String cpf;
@@ -60,38 +63,41 @@ public class Veterinarian {
     private LocalDate birthDate;
 
     @NotNull
+    @CreatedDate
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    public Veterinarian(VeterinarianForm customerForm) {
-        this.name = customerForm.getName();
-        this.email = customerForm.getEmail();
-        this.cpf = customerForm.getCpf();
-        this.crmv = customerForm.getCrmv();
-        this.state = customerForm.getAddress().getState();;
-        this.city = customerForm.getAddress().getCity();
-        this.address = customerForm.getAddress().getAddress();
-        this.neighbourhood = customerForm.getAddress().getNeighbourhood();
-        this.complement = customerForm.getAddress().getComplement();
-        this.number = customerForm.getAddress().getNumber();
-        this.cep = customerForm.getCpf();
-        this.phone = customerForm.getPhone();
-        this.birthDate = customerForm.getBirthDate();
-    }
-
-    public void merge(VeterinarianForm customerForm) {
-        this.name = customerForm.getName();
-        this.email = customerForm.getEmail();
-        this.cpf = customerForm.getCpf();
-        this.crmv = customerForm.getCrmv();
-        this.state = customerForm.getAddress().getState();;
-        this.city = customerForm.getAddress().getCity();
-        this.address = customerForm.getAddress().getAddress();
-        this.neighbourhood = customerForm.getAddress().getNeighbourhood();
-        this.complement = customerForm.getAddress().getComplement();
-        this.number = customerForm.getAddress().getNumber();
-        this.cep = customerForm.getCpf();
-        this.phone = customerForm.getPhone();
-        this.birthDate = customerForm.getBirthDate();
+    public Veterinarian(Long id,
+                        String name,
+                        String email,
+                        String password,
+                        String cpf,
+                        String crmv,
+                        State state,
+                        String city,
+                        String address,
+                        String neighbourhood,
+                        String complement,
+                        String number,
+                        String cep,
+                        String phone,
+                        LocalDate birthDate,
+                        LocalDateTime creationDate) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.cpf = cpf;
+        this.crmv = crmv;
+        this.state = state;
+        this.city = city;
+        this.address = address;
+        this.neighbourhood = neighbourhood;
+        this.complement = complement;
+        this.number = number;
+        this.cep = cep;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.creationDate = creationDate == null ? LocalDateTime.now() : creationDate;
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.raulalvesre.petshopvisitsservice.controllers;
 
+import br.com.raulalvesre.petshopvisitsservice.dtos.VisitDiagnosticDto;
 import br.com.raulalvesre.petshopvisitsservice.dtos.VisitDto;
 import br.com.raulalvesre.petshopvisitsservice.dtos.VisitForm;
 import br.com.raulalvesre.petshopvisitsservice.dtos.VisitMinifiedDto;
@@ -23,12 +24,12 @@ public class VisitController {
     private final VisitService visitService;
 
     @GetMapping("{id}")
-    public ResponseEntity<VisitDto> getById(@PathVariable("id") Long id) throws Throwable {
+    public ResponseEntity<VisitDto> getById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(visitService.getById(id));
     }
 
     @GetMapping("/minified/{id}")
-    public ResponseEntity<VisitMinifiedDto> getByIdMinified(@PathVariable("id") Long id) throws Throwable {
+    public ResponseEntity<VisitMinifiedDto> getByIdMinified(@PathVariable("id") Long id) {
         return ResponseEntity.ok(visitService.getByIdMinified(id));
     }
 
@@ -64,9 +65,16 @@ public class VisitController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<VisitDto> update(@PathVariable("id") Long id,
+    public ResponseEntity<Void> update(@PathVariable("id") Long id,
                                            @RequestBody @Valid VisitForm visitForm) {
         visitService.update(id, visitForm);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/diagnostic")
+    public ResponseEntity<Void> updateDiagnostic(@PathVariable("id") Long id,
+                                                     @RequestBody @Valid VisitDiagnosticDto visitDiagnosticDto) {
+        visitService.updateDiagnostic(id, visitDiagnosticDto.getDiagnostic());
         return ResponseEntity.noContent().build();
     }
 

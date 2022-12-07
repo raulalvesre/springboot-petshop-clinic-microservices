@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -23,6 +24,9 @@ public class VeterinarianForm {
 
     @Email
     private String email;
+
+    @Size(min = 8, message = "Password must have at least eight digits")
+    private String password;
 
     @CPF
     private String cpf;

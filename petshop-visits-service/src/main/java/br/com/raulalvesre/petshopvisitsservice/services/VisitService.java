@@ -111,8 +111,21 @@ public class VisitService {
         logger.info("Visit with id=" + id + " updated");
     }
 
+    public void updateDiagnostic(Long id, String diagnostic) {
+        logger.info("Updating diagnostic of visit with id=" + id);
+
+        Visit visit = visitRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.info("Visit with id=" + id + " not found");
+                    return new NotFoundException("Visit with id " + id + " not found!");
+                });
+
+        visit.setDiagnostic(diagnostic);
+        logger.info("Diagnostic of visit with id=" + id + " updated");
+    }
+
     public void delete(Long id) {
-        logger.info("Deleting veterinarian with id=" + id);
+        logger.info("Deleting visit with id=" + id);
 
         Visit visit = visitRepository.findById(id)
                 .orElseThrow(() -> {

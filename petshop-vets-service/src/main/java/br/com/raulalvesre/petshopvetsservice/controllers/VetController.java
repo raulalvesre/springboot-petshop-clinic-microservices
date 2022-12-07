@@ -1,5 +1,6 @@
 package br.com.raulalvesre.petshopvetsservice.controllers;
 
+import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianAuthDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianForm;
 import br.com.raulalvesre.petshopvetsservice.services.VeterinarianService;
@@ -26,6 +27,11 @@ public class VetController {
     @GetMapping("{id}")
     public ResponseEntity<VeterinarianDto> getById(@PathVariable("id") Long id) throws Throwable {
         return ResponseEntity.ok(veterinarianService.getById(id));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<VeterinarianAuthDto> getByEmail(@RequestParam("email") String email) throws Throwable {
+        return ResponseEntity.ok(veterinarianService.getByEmail(email));
     }
 
     @GetMapping("/page")

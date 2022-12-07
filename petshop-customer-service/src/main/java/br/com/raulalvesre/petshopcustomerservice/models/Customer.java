@@ -2,9 +2,8 @@ package br.com.raulalvesre.petshopcustomerservice.models;
 
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerForm;
 import br.com.raulalvesre.petshopcustomerservice.enums.State;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
+@Builder
 @Getter
 @Setter
 public class Customer {
@@ -33,6 +33,9 @@ public class Customer {
 
     @NotEmpty
     private String email;
+
+    @NotEmpty
+    private String password;
 
     @NotEmpty
     private String cpf;
@@ -64,42 +67,46 @@ public class Customer {
     private Set<Pet> pets = new HashSet<>();
 
     @NotNull
+    @CreatedDate
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    public Customer(CustomerForm customerForm) {
-        this.name = customerForm.getName();
-        this.email = customerForm.getEmail();
-        this.cpf = customerForm.getCpf();
-        this.state = customerForm.getAddress().getState();;
-        this.city = customerForm.getAddress().getCity();
-        this.address = customerForm.getAddress().getAddress();
-        this.neighbourhood = customerForm.getAddress().getNeighbourhood();
-        this.complement = customerForm.getAddress().getComplement();
-        this.number = customerForm.getAddress().getNumber();
-        this.cep = customerForm.getCpf();
-        this.phone = customerForm.getPhone();
-        this.birthDate = customerForm.getBirthDate();
-    }
-
-    public void merge(CustomerForm customerForm, Collection<Pet> pets) {
-        this.name = customerForm.getName();
-        this.email = customerForm.getEmail();
-        this.cpf = customerForm.getCpf();
-        this.state = customerForm.getAddress().getState();;
-        this.city = customerForm.getAddress().getCity();
-        this.address = customerForm.getAddress().getAddress();
-        this.neighbourhood = customerForm.getAddress().getNeighbourhood();
-        this.complement = customerForm.getAddress().getComplement();
-        this.number = customerForm.getAddress().getNumber();
-        this.cep = customerForm.getCpf();
-        this.phone = customerForm.getPhone();
-        this.birthDate = customerForm.getBirthDate();
-        setPets(pets);
+    public Customer(Long id,
+                    String name,
+                    String email,
+                    String password,
+                    String cpf,
+                    State state,
+                    String city,
+                    String address,
+                    String neighbourhood,
+                    String complement,
+                    String number,
+                    String cep,
+                    String phone,
+                    LocalDate birthDate,
+                    Set<Pet> pets,
+                    LocalDateTime creationDate) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.cpf = cpf;
+        this.state = state;
+        this.city = city;
+        this.address = address;
+        this.neighbourhood = neighbourhood;
+        this.complement = complement;
+        this.number = number;
+        this.cep = cep;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.pets = pets == null ? new HashSet<>() : pets;
+        this.creationDate = creationDate == null ? LocalDateTime.now() : creationDate;
     }
 
     public void setPets(Collection<Pet> pets) {
-        this.pets.clear();
         if (pets != null) {
+            this.pets.clear();
             this.pets.addAll(pets);
         }
     }

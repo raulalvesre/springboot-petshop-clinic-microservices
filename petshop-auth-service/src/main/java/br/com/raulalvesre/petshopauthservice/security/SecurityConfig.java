@@ -19,14 +19,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/auth/**").permitAll();
+        http.cors().and().csrf().disable();
+
+        http
+                .authorizeRequests()
+                .antMatchers("/**")
+                .permitAll();
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
     }
 
 }

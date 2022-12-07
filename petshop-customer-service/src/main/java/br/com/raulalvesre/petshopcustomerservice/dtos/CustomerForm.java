@@ -26,6 +26,9 @@ public class CustomerForm {
     @Email
     private String email;
 
+    @Size(min = 8, message = "Password must have at least eight digits")
+    private String password;
+
     @CPF
     private String cpf;
 

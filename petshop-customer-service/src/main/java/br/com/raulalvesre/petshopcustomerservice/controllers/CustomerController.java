@@ -1,5 +1,6 @@
 package br.com.raulalvesre.petshopcustomerservice.controllers;
 
+import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerAuthDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerForm;
 import br.com.raulalvesre.petshopcustomerservice.services.CustomerService;
@@ -26,6 +27,11 @@ public class CustomerController {
     @GetMapping("{id}")
     public ResponseEntity<CustomerDto> getById(@PathVariable("id") Long id) throws Throwable {
         return ResponseEntity.ok(customerService.getById(id));
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<CustomerAuthDto> getByEmail(@RequestParam("email") String email) throws Throwable {
+        return ResponseEntity.ok(customerService.getByEmail(email));
     }
 
     @GetMapping("/page")

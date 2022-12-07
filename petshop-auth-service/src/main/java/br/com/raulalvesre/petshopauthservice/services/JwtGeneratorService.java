@@ -1,41 +1,34 @@
 package br.com.raulalvesre.petshopauthservice.services;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JwtGeneratorService {
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.validityMs}")
-    private long validityInMilliseconds;
+    private final RSAPublicKey rsaPublicKey;
+    private final RSAPrivateKey rsaPrivateKey;
 
 
-    public String generateToken(String email, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role", role);
+    public String generateJwt(String subject, Map<String, String> claims) {
+        JWTCreator.Builder builder = JWT.create().withSubject(subject);
 
-        Date now = new Date();
-        Date expiration =  new Date(now.getTime() + validityInMilliseconds);
+        claims.forEach(builder::withClaim);
 
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
+        Date expiration =  new Date(new Date().getTime() + 7200000);
 
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(expiration)
-                .signWith(key)
-                .compact();
+        return builder
+                .withExpiresAt(expiration)
+                .sign(Algorithm.RSA256(rsaPublicKey, rsaPrivateKey));
     }
 
 }

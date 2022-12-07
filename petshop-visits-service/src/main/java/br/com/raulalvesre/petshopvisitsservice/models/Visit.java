@@ -38,7 +38,6 @@ public class Visit {
         this.customerId = form.getCustomerId();
         this.veterinarianId = form.getVeterinarianId();
         this.description = form.getDescription();
-        this.diagnostic = form.getDiagnostic();
         this.scheduledAt = form.getScheduledAt();
     }
 
@@ -46,7 +45,6 @@ public class Visit {
         this.customerId = form.getCustomerId();
         this.veterinarianId = form.getVeterinarianId();
         this.description = form.getDescription();
-        this.diagnostic = form.getDiagnostic();
         this.scheduledAt = form.getScheduledAt();
     }
 

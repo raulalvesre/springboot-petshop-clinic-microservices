@@ -22,8 +22,6 @@ public class VisitForm {
     @NotBlank
     private String description;
 
-    private String diagnostic;
-
     @NotNull
     private LocalDateTime scheduledAt;
 

@@ -1,9 +1,11 @@
 package br.com.raulalvesre.petshopcustomerservice.services;
 
+import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerAuthDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerForm;
 import br.com.raulalvesre.petshopcustomerservice.exceptions.NotFoundException;
 import br.com.raulalvesre.petshopcustomerservice.exceptions.UnprocessableEntityException;
+import br.com.raulalvesre.petshopcustomerservice.mappers.CustomerMapper;
 import br.com.raulalvesre.petshopcustomerservice.models.Customer;
 import br.com.raulalvesre.petshopcustomerservice.models.Pet;
 import br.com.raulalvesre.petshopcustomerservice.repositories.CustomerRepository;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,8 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final PetTypeRepository petTypeRepository;
+    private final CustomerMapper customerMapper;
+
     Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     public CustomerDto getById(Long id) {
@@ -36,6 +41,16 @@ public class CustomerService {
                 .orElseThrow(() ->  {
                     logger.info("Customer with id " + id + " not found!");
                     return new NotFoundException("Customer with id " + id + " not found!");
+                });
+    }
+
+    public CustomerAuthDto getByEmail(String email) {
+        logger.info("Getting customer with email=" + email);
+        return customerRepository.findByEmail(email)
+                .map(CustomerAuthDto::new)
+                .orElseThrow(() ->  {
+                    logger.info("Customer with email " + email + " not found!");
+                    return new NotFoundException("Customer with email " + email + " not found!");
                 });
     }
 
@@ -56,7 +71,7 @@ public class CustomerService {
     public CustomerDto create(CustomerForm form) {
         validateUniqueFields(form);
         logger.info("Creating customer");
-        Customer customer = new Customer(form);
+        Customer customer = customerMapper.toModel(form);
         Set<Pet> pets = form.getPets().stream()
                 .map(x -> new Pet(x, petTypeRepository.getReferenceById(x.getType_id()), customer))
                 .collect(Collectors.toSet());
@@ -106,7 +121,7 @@ public class CustomerService {
                 .map(x -> new Pet(x, petTypeRepository.getReferenceById(x.getType_id()), customer))
                 .collect(Collectors.toSet());
 
-        customer.merge(form, pets);
+        customerMapper.merge(customer, form, pets);
         customerRepository.save(customer);
         logger.info("Customer with id=" + id + " updated");
     }

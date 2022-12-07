@@ -2,7 +2,6 @@ package br.com.raulalvesre.petshopvisitsservice.services;
 
 import br.com.raulalvesre.petshopvisitsservice.dtos.VeterinarianDto;
 import br.com.raulalvesre.petshopvisitsservice.exceptions.NotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

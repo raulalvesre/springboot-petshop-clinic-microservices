@@ -1,9 +1,11 @@
 package br.com.raulalvesre.petshopvetsservice.services;
 
+import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianAuthDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianForm;
 import br.com.raulalvesre.petshopvetsservice.exceptions.NotFoundException;
 import br.com.raulalvesre.petshopvetsservice.exceptions.UnprocessableEntityException;
+import br.com.raulalvesre.petshopvetsservice.mappers.VeterinarianMapper;
 import br.com.raulalvesre.petshopvetsservice.models.Veterinarian;
 import br.com.raulalvesre.petshopvetsservice.repositories.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class VeterinarianService {
 
     private final VeterinarianRepository veterinarianRepository;
+    private final VeterinarianMapper veterinarianMapper;
     Logger logger = LoggerFactory.getLogger(VeterinarianService.class);
 
     public VeterinarianDto getById(Long id) {
@@ -33,6 +36,16 @@ public class VeterinarianService {
                 .orElseThrow(() -> {
                     logger.info("Veterinarian with id " + id + " not found!");
                     return new NotFoundException("Veterinarian with id " + id + " not found!");
+                });
+    }
+
+    public VeterinarianAuthDto getByEmail(String email) {
+        logger.info("Getting veterinarian with email=" + email);
+        return veterinarianRepository.findByEmail(email)
+                .map(VeterinarianAuthDto::new)
+                .orElseThrow(() -> {
+                    logger.info("Veterinarian with email " + email + " not found!");
+                    return new NotFoundException("Veterinarian with email " + email + " not found!");
                 });
     }
 
@@ -52,7 +65,7 @@ public class VeterinarianService {
     public VeterinarianDto create(VeterinarianForm form) {
         validateUniqueFields(form);
         logger.info("Creating customer");
-        Veterinarian customer = new Veterinarian(form);
+        Veterinarian customer = veterinarianMapper.toModel(form);
         veterinarianRepository.save(customer);
         logger.info("New veterinarian with id=" + customer.getId() + " created");
         return new VeterinarianDto(customer);
@@ -96,7 +109,7 @@ public class VeterinarianService {
                 });
 
         validateUniqueFields(id, form);
-        veterinarian.merge(form);
+        veterinarianMapper.merge(veterinarian, form);
         veterinarianRepository.save(veterinarian);
         logger.info("Veterinarian with id=" + id + " updated");
     }

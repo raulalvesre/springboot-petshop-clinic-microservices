@@ -1,7 +1,7 @@
 package br.com.raulalvesre.petshopauthservice.controller;
 
 import br.com.raulalvesre.petshopauthservice.dtos.LoginRequest;
-import br.com.raulalvesre.petshopauthservice.dtos.LoginResponse;
+import br.com.raulalvesre.petshopauthservice.dtos.JwtResponse;
 import br.com.raulalvesre.petshopauthservice.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,19 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+    @PostMapping("/customer/login")
+    public ResponseEntity<JwtResponse> customerLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.customerLogin(loginRequest));
+    }
+
+    @PostMapping("/veterinarian/login")
+    public ResponseEntity<JwtResponse> veterinarianLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.veterinarianLogin(loginRequest));
+    }
+
+    @PostMapping("/attendant/login")
+    public ResponseEntity<JwtResponse> attendantLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.attendantLogin(loginRequest));
     }
 
 }

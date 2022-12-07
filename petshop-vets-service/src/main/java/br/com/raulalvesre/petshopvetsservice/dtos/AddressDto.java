@@ -29,6 +29,9 @@ public class AddressDto {
     @NotEmpty
     private String number;
 
+    @NotEmpty
+    private String cep;
+
     public AddressDto(Veterinarian veterinarian) {
         this.state = veterinarian.getState();
         this.city = veterinarian.getCity();
@@ -36,6 +39,7 @@ public class AddressDto {
         this.neighbourhood = veterinarian.getNeighbourhood();
         this.complement = veterinarian.getComplement();
         this.number = veterinarian.getNumber();
+        this.cep = veterinarian.getCep();
     }
 
 }
