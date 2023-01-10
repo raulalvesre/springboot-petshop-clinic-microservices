@@ -1,7 +1,8 @@
 package br.com.raulalvesre.petshopvisitsservice.enums;
 
-public enum Roles {
+public enum Role {
     VETERINARIAN,
     ATTENDANT,
-    CUSTOMER
+    CUSTOMER,
+    ADMIN
 }

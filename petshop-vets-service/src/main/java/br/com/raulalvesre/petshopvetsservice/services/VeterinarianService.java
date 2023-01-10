@@ -3,8 +3,6 @@ package br.com.raulalvesre.petshopvetsservice.services;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianAuthDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianDto;
 import br.com.raulalvesre.petshopvetsservice.dtos.VeterinarianForm;
-import br.com.raulalvesre.petshopvetsservice.exceptions.NotFoundException;
-import br.com.raulalvesre.petshopvetsservice.exceptions.UnprocessableEntityException;
 import br.com.raulalvesre.petshopvetsservice.mappers.VeterinarianMapper;
 import br.com.raulalvesre.petshopvetsservice.models.Veterinarian;
 import br.com.raulalvesre.petshopvetsservice.repositories.VeterinarianRepository;
@@ -13,11 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,7 @@ public class VeterinarianService {
                 .map(VeterinarianDto::new)
                 .orElseThrow(() -> {
                     logger.info("Veterinarian with id " + id + " not found!");
-                    return new NotFoundException("Veterinarian with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Veterinarian with id " + id + " not found!");
                 });
     }
 
@@ -45,7 +44,7 @@ public class VeterinarianService {
                 .map(VeterinarianAuthDto::new)
                 .orElseThrow(() -> {
                     logger.info("Veterinarian with email " + email + " not found!");
-                    return new NotFoundException("Veterinarian with email " + email + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Veterinarian with email " + email + " not found!");
                 });
     }
 
@@ -96,7 +95,7 @@ public class VeterinarianService {
             errorMessages.add("Phone already registered");
 
         if (!errorMessages.isEmpty())
-            throw new UnprocessableEntityException(errorMessages);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, errorMessages.toString());
     }
 
     public void update(Long id, VeterinarianForm form) {
@@ -105,7 +104,7 @@ public class VeterinarianService {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Veterinarian with id " + id + " not found!");
-                    return new NotFoundException("Veterinarian with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Veterinarian with id " + id + " not found!");
                 });
 
         validateUniqueFields(id, form);
@@ -120,7 +119,7 @@ public class VeterinarianService {
         Veterinarian veterinarian = veterinarianRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Veterinarian with id " + id + " not found!");
-                    return new NotFoundException("Veterinarian with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Veterinarian with id " + id + " not found!");
                 });
         veterinarianRepository.delete(veterinarian);
         logger.info("Veterinarian with id=" + id + " deleted");
