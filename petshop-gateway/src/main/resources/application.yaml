@@ -1,0 +1,71 @@
+server:
+  port: 7777
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: admin-email
+          uri: no://op
+          predicates:
+            - Path=/api/admin/email
+          filters:
+            - SetStatus=403
+
+        - id: admin-service
+          uri: lb://admin-service
+          predicates:
+            - Path=/api/admin/**
+
+        - id: customer-email
+          uri: no://op
+          predicates:
+            - Path=/api/customer/email
+          filters:
+            - SetStatus=403
+
+        - id: customer-service
+          uri: lb://customer-service
+          predicates:
+            - Path=/api/customer/**
+
+        - id: vet-email
+          uri: no://op
+          predicates:
+            - Path=/api/veterinarian/email
+          filters:
+            - SetStatus=403
+
+        - id: vet-service
+          uri: lb://vets-service
+          predicates:
+            - Path=/api/veterinarian/**
+
+        - id: visits-service
+          uri: lb://visits-service
+          predicates:
+            - Path=/api/visit/**
+
+        - id: attendant-email
+          uri: no://op
+          predicates:
+            - Path=/api/attendant/email
+          filters:
+            - SetStatus=403
+
+        - id: attendant-service
+          uri: lb://attendant-service
+          predicates:
+            - Path=/api/attendant/**
+
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
