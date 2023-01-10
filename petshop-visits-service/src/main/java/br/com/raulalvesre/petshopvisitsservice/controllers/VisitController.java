@@ -5,7 +5,9 @@ import br.com.raulalvesre.petshopvisitsservice.dtos.VisitDto;
 import br.com.raulalvesre.petshopvisitsservice.dtos.VisitForm;
 import br.com.raulalvesre.petshopvisitsservice.dtos.VisitMinifiedDto;
 import br.com.raulalvesre.petshopvisitsservice.services.VisitService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/visit")
@@ -23,6 +27,60 @@ public class VisitController {
 
     private final VisitService visitService;
 
+    public class AAA {
+        public Test testaaa = new Test();
+
+        public AAA(){}
+
+        public AAA(Test testaaa) {
+            this.testaaa = testaaa;
+        }
+
+        public Test getTestaaa() {
+            return testaaa;
+        }
+
+        public void setTestaaa(Test testaaa) {
+            this.testaaa = testaaa;
+        }
+    }
+
+    public class Test {
+        public LocalDate test = LocalDate.now();
+        public LocalDateTime test2 = LocalDateTime.now();
+
+        public Test() {}
+
+        public Test(LocalDate test, LocalDateTime localDateTime) {
+            this.test = test;
+            test2 = localDateTime;
+        }
+
+        public LocalDate getTest() {
+            return test;
+        }
+
+        public void setTest(LocalDate test) {
+            this.test = test;
+        }
+
+        public LocalDateTime getTest2() {
+            return test2;
+        }
+
+        public void setTest2(LocalDateTime test2) {
+            this.test2 = test2;
+        }
+    }
+
+    @GetMapping("/teste")
+    public ResponseEntity<AAA> getssssId() {
+        try {
+            return ResponseEntity.ok(new AAA());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @GetMapping("{id}")
     public ResponseEntity<VisitDto> getById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(visitService.getById(id));
@@ -55,9 +113,6 @@ public class VisitController {
     public ResponseEntity<VisitDto> create(@RequestBody @Valid VisitForm visitForm) {
         VisitDto customerDto = visitService.create(visitForm);
         UriComponents uri = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port("8081")
                 .pathSegment("visit", customerDto.getId().toString())
                 .build();
 
@@ -68,13 +123,6 @@ public class VisitController {
     public ResponseEntity<Void> update(@PathVariable("id") Long id,
                                            @RequestBody @Valid VisitForm visitForm) {
         visitService.update(id, visitForm);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/diagnostic")
-    public ResponseEntity<Void> updateDiagnostic(@PathVariable("id") Long id,
-                                                     @RequestBody @Valid VisitDiagnosticDto visitDiagnosticDto) {
-        visitService.updateDiagnostic(id, visitDiagnosticDto.getDiagnostic());
         return ResponseEntity.noContent().build();
     }
 

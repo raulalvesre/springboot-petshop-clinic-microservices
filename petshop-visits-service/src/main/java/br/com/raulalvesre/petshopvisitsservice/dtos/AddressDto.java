@@ -2,6 +2,7 @@ package br.com.raulalvesre.petshopvisitsservice.dtos;
 
 import br.com.raulalvesre.petshopvisitsservice.enums.State;
 import br.com.raulalvesre.petshopvisitsservice.models.Visit;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

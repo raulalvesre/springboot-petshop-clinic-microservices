@@ -1,7 +1,6 @@
 package br.com.raulalvesre.petshopvisitsservice.services;
 
 import br.com.raulalvesre.petshopvisitsservice.dtos.*;
-import br.com.raulalvesre.petshopvisitsservice.exceptions.NotFoundException;
 import br.com.raulalvesre.petshopvisitsservice.models.Visit;
 import br.com.raulalvesre.petshopvisitsservice.repositories.VisitRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
@@ -33,21 +34,27 @@ public class VisitService {
         Visit visit = visitRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Visit with id " + id + " not found!");
-                    return new NotFoundException("Visit with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Visit with id " + id + " not found!");
                 });
 
         Mono<CustomerDto> customerMono = customerService.getById(visit.getCustomerId());
         Mono<VeterinarianDto> veterinarianMono = veterinarianService.getById(visit.getVeterinarianId());
         Tuple2<CustomerDto, VeterinarianDto> resultTuple = Mono.zip(customerMono, veterinarianMono).block();
 
-        return new VisitDto(visit, resultTuple.getT1(), resultTuple.getT2());
+
+        VisitDto visitDto = new VisitDto(visit, resultTuple.getT1(), resultTuple.getT2());
+
+        return visitDto;
     }
 
     public VisitMinifiedDto getByIdMinified(Long id) {
         logger.info("Getting visit with id=" + id + " (minified)");
-        return visitRepository.findById(id)
+        VisitMinifiedDto visitMinifiedDto = visitRepository.findById(id)
                 .map(VisitMinifiedDto::new)
-                .orElseThrow(() -> new NotFoundException("Visit with id " + id + " not found!"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Visit with id " + id + " not found!"));
+
+
+        return visitMinifiedDto;
     }
 
     public Page<VisitDto> getPage(Pageable pageable) {
@@ -103,7 +110,7 @@ public class VisitService {
         Visit visit = visitRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Visit with id=" + id + " not found");
-                    return new NotFoundException("Visit with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Visit with id " + id + " not found!");
                 });
 
         visit.merge(form);
@@ -117,7 +124,7 @@ public class VisitService {
         Visit visit = visitRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Visit with id=" + id + " not found");
-                    return new NotFoundException("Visit with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Visit with id " + id + " not found!");
                 });
 
         visit.setDiagnostic(diagnostic);
@@ -130,7 +137,7 @@ public class VisitService {
         Visit visit = visitRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Visit with id=" + id + " not found");
-                    return new NotFoundException("Visit with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Visit with id " + id + " not found!");
                 });
 
         visitRepository.delete(visit);

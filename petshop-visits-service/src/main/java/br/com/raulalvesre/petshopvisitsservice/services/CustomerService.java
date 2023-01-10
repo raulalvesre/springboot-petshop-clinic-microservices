@@ -2,12 +2,11 @@ package br.com.raulalvesre.petshopvisitsservice.services;
 
 import br.com.raulalvesre.petshopvisitsservice.dtos.CustomerDto;
 import br.com.raulalvesre.petshopvisitsservice.utils.BearerTokenWrapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,33 +18,32 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @Service
 public class CustomerService {
 
     private final WebClient webClient;
     private final BearerTokenWrapper tokenWrapper;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisTemplate<String, String> redisTemplate3;
-    private final RedisTemplate<String, Set<CustomerDto>> redisTemplate2;
-    private final ObjectMapper objectMapper;
+    private final RedisTemplate<String, CustomerDto> customerTemplate;
+    private final RedisTemplate<String, Set<CustomerDto>> customerSetTemplate;
 
     public CustomerService(WebClient.Builder webClientBuilder,
                            BearerTokenWrapper tokenWrapper,
-                           RedisTemplate<String, Object> redisOperations, RedisTemplate<String, String> redisTemplate3, RedisTemplate<String, Set<CustomerDto>> redisTemplate2, ObjectMapper objectMapper) {
+                           RedisTemplate<String, CustomerDto> customerTemplate,
+                           RedisTemplate<String, Set<CustomerDto>> customerSetTemplate) {
         this.webClient = webClientBuilder.baseUrl("http://customer-service/api/customer")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 
         this.tokenWrapper = tokenWrapper;
-        this.redisTemplate = redisOperations;
-        this.redisTemplate3 = redisTemplate3;
-        this.redisTemplate2 = redisTemplate2;
-        this.objectMapper = objectMapper;
+        this.customerTemplate = customerTemplate;
+        this.customerSetTemplate = customerSetTemplate;
     }
 
     @CircuitBreaker(name ="customerGetById", fallbackMethod = "getByIdFromCache")
+    @Bulkhead(name ="customerGetById", fallbackMethod = "getByIdFromCache")
     public Mono<CustomerDto> getById(Long id) {
         return webClient.get()
                 .uri("/{id}", id)
@@ -56,23 +54,22 @@ public class CustomerService {
                 .bodyToMono(CustomerDto.class)
                 .timeout(Duration.ofSeconds(2))
                 .doOnNext(resp -> {
-                    redisTemplate.opsForHash().put("customer", id, resp);
+                    customerTemplate.opsForHash().put("customer", String.valueOf(id), resp);
                 });
     }
 
-    public Mono<CustomerDto> getByIdFromCache(Long id, Exception e) {
-        HashOperations<String, Long, String> stringObjectObjectHashOperations = redisTemplate.opsForHash();
-
-        String customer = stringObjectObjectHashOperations.get("customer", id);
-
-        try {
-            return Mono.just(objectMapper.readValue(customer, CustomerDto.class));
-        } catch (JsonProcessingException ex) {
-            throw new RuntimeException(ex);
+    private Mono<CustomerDto> getByIdFromCache(Long id, Exception e) {
+        HashOperations<String, String, CustomerDto> operations = customerTemplate.opsForHash();
+        CustomerDto customer = operations.get("customer", String.valueOf(id));
+        if (customer == null) {
+            throw new ResponseStatusException(SERVICE_UNAVAILABLE, "Customer service is unavailable");
         }
+
+        return Mono.just(customer);
     }
 
-    @CircuitBreaker(name ="customerGetById", fallbackMethod = "getByIdInFromCache")
+    @CircuitBreaker(name ="customersGetByIdIn", fallbackMethod = "getByIdInFromCache")
+    @Bulkhead(name ="customersGetByIdIn", fallbackMethod = "getByIdInFromCache")
     public Mono<Set<CustomerDto>> getByIdIn(Collection<Long> idList) {
         String joinedList = String.join(",", idList.stream()
                 .map(Object::toString)
@@ -85,20 +82,19 @@ public class CustomerService {
                 .bodyToMono(new ParameterizedTypeReference<Set<CustomerDto>>() {})
                 .timeout(Duration.ofSeconds(2))
                 .doOnNext(resp -> {
-                    HashOperations<String, String, Set<CustomerDto>> hashOperations = redisTemplate2.opsForHash();
+                    HashOperations<String, String, Set<CustomerDto>> hashOperations = customerSetTemplate.opsForHash();
                     hashOperations.put("customers", String.valueOf(idList.hashCode()), resp);
                 });
     }
 
-    public Mono<Set<CustomerDto>> getByIdInFromCache(Collection<Long> idList, Exception e) {
-        HashOperations<String, String, String> hashOperations = redisTemplate3.opsForHash();
-        String customers = hashOperations.get("customers", String.valueOf(idList.hashCode()));
-        try {
-            Set<CustomerDto> customerDtos = objectMapper.readValue(customers, new TypeReference<>() {});
-            return Mono.just(customerDtos);
-        } catch (JsonProcessingException ex) {
-            throw new RuntimeException(ex);
+    private Mono<Set<CustomerDto>> getByIdInFromCache(Collection<Long> idList, Exception e) {
+        HashOperations<String, String, Set<CustomerDto>> hashOperations = customerSetTemplate.opsForHash();
+        Set<CustomerDto> customers = hashOperations.get("customers", String.valueOf(idList.hashCode()));
+        if (customers == null) {
+            throw new ResponseStatusException(SERVICE_UNAVAILABLE, "Customer service is unavailable");
         }
+
+        return Mono.just(customers);
     }
 
 }
