@@ -1,4 +1,4 @@
-package br.com.raulalvesre.petshopvetsservice.validation;
+package br.com.raulalvesre.petshopattendantservice.validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
