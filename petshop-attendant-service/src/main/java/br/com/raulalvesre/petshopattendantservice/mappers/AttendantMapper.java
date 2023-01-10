@@ -18,7 +18,6 @@ public class AttendantMapper {
                 .email(attendantForm.getName())
                 .password(passwordEncoder.encode(attendantForm.getPassword()))
                 .cpf(attendantForm.getCpf())
-                .crmv(attendantForm.getCrmv())
                 .state(attendantForm.getAddress().getState())
                 .city(attendantForm.getAddress().getCity())
                 .address(attendantForm.getAddress().getAddress())
@@ -36,7 +35,6 @@ public class AttendantMapper {
         attendant.setEmail(attendantForm.getEmail());
         attendant.setPassword(passwordEncoder.encode(attendantForm.getPassword()));
         attendant.setCpf(attendantForm.getCpf());
-        attendant.setCrmv(attendantForm.getCrmv());
         attendant.setState(attendantForm.getAddress().getState());
         attendant.setCity(attendantForm.getAddress().getCity());
         attendant.setAddress(attendantForm.getAddress().getAddress());

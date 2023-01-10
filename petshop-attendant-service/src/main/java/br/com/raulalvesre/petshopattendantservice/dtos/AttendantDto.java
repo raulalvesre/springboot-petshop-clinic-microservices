@@ -1,6 +1,10 @@
 package br.com.raulalvesre.petshopattendantservice.dtos;
 
 import br.com.raulalvesre.petshopattendantservice.models.Attendant;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +22,6 @@ public class AttendantDto implements Serializable {
     private String name;
     private String email;
     private String cpf;
-    private String crmv;
     private AddressDto address;
     private String phone;
     private LocalDate birthDate;
@@ -29,7 +32,6 @@ public class AttendantDto implements Serializable {
         this.name = veterinarian.getName();
         this.email = veterinarian.getEmail();
         this.cpf = veterinarian.getCpf();
-        this.crmv = veterinarian.getCrmv();
         this.address = new AddressDto(veterinarian);
         this.phone = veterinarian.getPhone();
         this.birthDate = veterinarian.getBirthDate();

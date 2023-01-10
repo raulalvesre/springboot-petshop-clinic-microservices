@@ -53,7 +53,6 @@ public class AttendantController {
     @PostMapping
     public ResponseEntity<AttendantDto> create(@RequestBody @Valid AttendantForm attendantForm) {
         AttendantDto customerDto = attendantService.create(attendantForm);
-        //TODO fix this in everybody
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .pathSegment("attendant", customerDto.getId().toString())
                 .build();

@@ -38,9 +38,6 @@ public class Attendant {
     @NotEmpty
     private String cpf;
 
-    @NotEmpty
-    private String crmv;
-
     @Enumerated(EnumType.STRING)
     private State state;
 
@@ -73,7 +70,6 @@ public class Attendant {
                      String email,
                      String password,
                      String cpf,
-                     String crmv,
                      State state,
                      String city,
                      String address,
@@ -89,7 +85,6 @@ public class Attendant {
         this.email = email;
         this.password = password;
         this.cpf = cpf;
-        this.crmv = crmv;
         this.state = state;
         this.city = city;
         this.address = address;

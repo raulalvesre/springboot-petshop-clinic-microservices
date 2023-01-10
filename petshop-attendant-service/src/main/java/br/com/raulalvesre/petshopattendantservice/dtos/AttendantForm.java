@@ -1,15 +1,14 @@
 package br.com.raulalvesre.petshopattendantservice.dtos;
 
 import br.com.raulalvesre.petshopattendantservice.validation.AdultAge;
-import br.com.raulalvesre.petshopvetsservice.validation.Email;
-import br.com.raulalvesre.petshopvetsservice.validation.Telephone;
+import br.com.raulalvesre.petshopattendantservice.validation.Email;
+import br.com.raulalvesre.petshopattendantservice.validation.Telephone;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -30,9 +29,6 @@ public class AttendantForm {
 
     @CPF
     private String cpf;
-
-    @NotEmpty
-    private String crmv;
 
     @NotNull
     private AddressDto address;

@@ -11,7 +11,6 @@ public interface AttendantRepository extends JpaRepository<Attendant, Long> {
 
     boolean existsByIdNotAndEmail(Long id, String email);
     boolean existsByIdNotAndCpf(Long id, String cpf);
-    boolean existsByIdNotAndCrmv(Long id, String crmv);
     boolean existsByIdNotAndPhone(Long id, String phone);
     Set<Attendant> findByIdIn(Collection<Long> idCollection);
     Optional<Attendant> findByEmail(String email);
