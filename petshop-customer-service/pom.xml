@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.raulalvesre</groupId>
-	<artifactId>petshop-attendant-service</artifactId>
+	<artifactId>petshop-customer-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>petshop-attendant-service</name>
+	<name>petshop-customer-service</name>
 	<description>A project to learn more about microservices</description>
 	<properties>
 		<java.version>19</java.version>
@@ -91,7 +91,19 @@
 			<version>2.0.2</version>
 		</dependency>
 
-    </dependencies>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
+			<version>5.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
+			<version>5.8.0</version>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<plugins>

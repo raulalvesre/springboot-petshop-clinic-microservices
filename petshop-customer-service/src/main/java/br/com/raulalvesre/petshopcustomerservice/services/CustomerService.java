@@ -3,8 +3,6 @@ package br.com.raulalvesre.petshopcustomerservice.services;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerAuthDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerDto;
 import br.com.raulalvesre.petshopcustomerservice.dtos.CustomerForm;
-import br.com.raulalvesre.petshopcustomerservice.exceptions.NotFoundException;
-import br.com.raulalvesre.petshopcustomerservice.exceptions.UnprocessableEntityException;
 import br.com.raulalvesre.petshopcustomerservice.mappers.CustomerMapper;
 import br.com.raulalvesre.petshopcustomerservice.models.Customer;
 import br.com.raulalvesre.petshopcustomerservice.models.Pet;
@@ -15,9 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +31,7 @@ public class CustomerService {
     private final PetTypeRepository petTypeRepository;
     private final CustomerMapper customerMapper;
 
+
     Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     public CustomerDto getById(Long id) {
@@ -40,7 +40,7 @@ public class CustomerService {
                 .map(CustomerDto::new)
                 .orElseThrow(() ->  {
                     logger.info("Customer with id " + id + " not found!");
-                    return new NotFoundException("Customer with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with id " + id + " not found!");
                 });
     }
 
@@ -50,7 +50,7 @@ public class CustomerService {
                 .map(CustomerAuthDto::new)
                 .orElseThrow(() ->  {
                     logger.info("Customer with email " + email + " not found!");
-                    return new NotFoundException("Customer with email " + email + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with email " + email + " not found!");
                 });
     }
 
@@ -102,7 +102,7 @@ public class CustomerService {
             errorMessages.add("Phone already registered");
 
         if (!errorMessages.isEmpty())
-            throw new UnprocessableEntityException(errorMessages);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, errorMessages.toString());
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Customer with id " + id + " not found!");
-                    return new NotFoundException("Customer with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with id " + id + " not found!");
                 });
 
         validateUniqueFields(id, form);
@@ -132,7 +132,7 @@ public class CustomerService {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.info("Customer with id " + id + " not found!");
-                    return new NotFoundException("Customer with id " + id + " not found!");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer with id " + id + " not found!");
                 });
         customerRepository.delete(customer);
         logger.info("Customer with id=" + id + " deleted");

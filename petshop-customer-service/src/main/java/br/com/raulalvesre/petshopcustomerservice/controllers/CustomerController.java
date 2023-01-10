@@ -14,6 +14,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -54,9 +56,6 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> create(@RequestBody @Valid CustomerForm customerForm) {
         CustomerDto customerDto = customerService.create(customerForm);
         UriComponents uri = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost")
-                .port("8081")
                 .pathSegment("customer", customerDto.getId().toString())
                 .build();
 
