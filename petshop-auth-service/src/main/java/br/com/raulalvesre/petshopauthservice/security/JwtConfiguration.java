@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
@@ -14,6 +15,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
 
 
 @Configuration
@@ -21,32 +23,34 @@ public class JwtConfiguration {
 
     Logger logger = LoggerFactory.getLogger(JwtConfiguration.class);
 
-    @Value("${security.jwt.keystore-location}")
-    private String keyStorePath;
+    @Value("${security.jks.value}")
+    private String keyStoreValue;
 
-    @Value("${security.jwt.keystore-password}")
+    @Value("${security.jks.password}")
     private String keyStorePassword;
 
-    @Value("${security.jwt.key-alias}")
+    @Value("${security.jks.alias}")
     private String keyAlias;
 
-    @Value("${security.jwt.private-key-passphrase}")
+    @Value("${security.jks.private-key-passphrase}")
     private String privateKeyPassphrase;
 
     @Bean
     public KeyStore keyStore() {
+        byte[] jksFile = Base64.getMimeDecoder()
+                .decode(keyStoreValue);
+
         try {
-            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            InputStream is = new ClassPathResource(keyStorePath).getInputStream();
-            keyStore.load(is, keyStorePassword.toCharArray());
+            KeyStore keyStore = KeyStore.getInstance("JKS");
+            char[] passwordAsCharArray = keyStorePassword.toCharArray();
+            keyStore.load(new ByteArrayInputStream(jksFile), passwordAsCharArray);
             return keyStore;
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
-            logger.error("Unable to load keystore: {}", keyStorePath, e);
+        } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e) {
+            logger.error("Unable to load JKS KeyStore", e);
         }
 
-        throw new IllegalArgumentException("Unable to load keystore");
+        throw new RuntimeException("Unable to load JKS KeyStore");
     }
-
     @Bean
     public RSAPrivateKey jwtSigningKey(KeyStore keyStore) {
         try {
@@ -55,10 +59,10 @@ public class JwtConfiguration {
                 return (RSAPrivateKey) key;
             }
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-            logger.error("Unable to load private key from keystore: {}", keyStorePath, e);
+            logger.error("Unable to load private key", e);
         }
 
-        throw new IllegalArgumentException("Unable to load private key");
+        throw new RuntimeException("Unable to load private key");
     }
 
     @Bean
@@ -71,10 +75,10 @@ public class JwtConfiguration {
                 return (RSAPublicKey) publicKey;
             }
         } catch (KeyStoreException e) {
-            logger.error("Unable to load private key from keystore: {}", keyStorePath, e);
+            logger.error("Unable to load private key", e);
         }
 
-        throw new IllegalArgumentException("Unable to load RSA public key");
+        throw new RuntimeException("Unable to load RSA public key");
     }
 
 }

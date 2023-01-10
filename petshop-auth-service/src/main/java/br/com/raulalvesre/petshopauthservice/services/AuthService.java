@@ -1,9 +1,6 @@
 package br.com.raulalvesre.petshopauthservice.services;
 
-import br.com.raulalvesre.petshopauthservice.dtos.CustomerDto;
-import br.com.raulalvesre.petshopauthservice.dtos.JwtResponse;
-import br.com.raulalvesre.petshopauthservice.dtos.LoginRequest;
-import br.com.raulalvesre.petshopauthservice.dtos.VeterinarianDto;
+import br.com.raulalvesre.petshopauthservice.dtos.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +17,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final CustomerService customerService;
     private final VeterinarianService veterinarianService;
+    private final AttendantService attendantService;
+    private final AdminService adminService;
 
     public JwtResponse customerLogin(LoginRequest loginRequest) {
         String email = loginRequest.getEmail();
@@ -54,7 +53,35 @@ public class AuthService {
     }
     
     public JwtResponse attendantLogin(LoginRequest loginRequest) {
-        return null;
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        AttendantDto attendantDto = attendantService.getByEmail(email).block();
+
+        if (!passwordEncoder.matches(password, attendantDto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password");
+        }
+
+        Map<String, String> claims = Map.of("role", "ROLE_ATTENDANT");
+
+        String token = jwtGeneratorService.generateJwt(attendantDto.getEmail(), claims);
+        return new JwtResponse(token);
+    }
+
+    public JwtResponse adminLogin(LoginRequest loginRequest) {
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+
+        AdminDto adminDto = adminService.getByEmail(email).block();
+
+        if (!passwordEncoder.matches(password, adminDto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password");
+        }
+
+        Map<String, String> claims = Map.of("role", "ROLE_ADMIN");
+
+        String token = jwtGeneratorService.generateJwt(adminDto.getEmail(), claims);
+        return new JwtResponse(token);
     }
 
 }

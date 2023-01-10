@@ -34,4 +34,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.attendantLogin(loginRequest));
     }
 
+    @PostMapping("/admin/login")
+    public ResponseEntity<JwtResponse> adminLogin(@RequestBody @Valid LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.adminLogin(loginRequest));
+    }
+
 }
