@@ -14,8 +14,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -25,42 +23,7 @@ import java.util.Set;
 public class VetController {
 
     private final VeterinarianService veterinarianService;
-    public class Test {
-        public LocalDate test = LocalDate.now();
-        public LocalDateTime test2 = LocalDateTime.now();
 
-        public Test() {}
-
-        public Test(LocalDate test, LocalDateTime localDateTime) {
-            this.test = test;
-            test2 = localDateTime;
-        }
-
-        public LocalDate getTest() {
-            return test;
-        }
-
-        public void setTest(LocalDate test) {
-            this.test = test;
-        }
-
-        public LocalDateTime getTest2() {
-            return test2;
-        }
-
-        public void setTest2(LocalDateTime test2) {
-            this.test2 = test2;
-        }
-    }
-
-    @GetMapping("/teste")
-    public ResponseEntity<Test> getssssId() {
-        try {
-            return ResponseEntity.ok(new Test());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
     @GetMapping("{id}")
     public ResponseEntity<VeterinarianDto> getById(@PathVariable("id") Long id) throws Throwable {
         return ResponseEntity.ok(veterinarianService.getById(id));
