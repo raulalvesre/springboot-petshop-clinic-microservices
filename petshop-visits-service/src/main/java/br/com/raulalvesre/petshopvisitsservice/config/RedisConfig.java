@@ -24,13 +24,10 @@ import java.util.Set;
 @EnableCaching
 public class RedisConfig {
 
-    Logger logger = LoggerFactory.getLogger(RedisConfig.class);
-
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.port}")
     private Integer port;
-
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
