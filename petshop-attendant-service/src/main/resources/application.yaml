@@ -1,0 +1,19 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8091
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: attendant-service
+  config:
+    import: configserver:http://localhost:8888
+  profiles:
+    active: default
