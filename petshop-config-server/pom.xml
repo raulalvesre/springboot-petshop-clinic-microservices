@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.raulalvesre</groupId>
-	<artifactId>pet-shop-config-server</artifactId>
+	<artifactId>petshop-config-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pet-shop-config-server</name>
+	<name>petshop-config-server</name>
 	<description>Config server for my petshop</description>
 	<properties>
 		<java.version>19</java.version>

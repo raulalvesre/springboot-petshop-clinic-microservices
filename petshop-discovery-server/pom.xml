@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.raulalvesre</groupId>
-	<artifactId>pet-shop-discovery-server</artifactId>
+	<artifactId>petshop-discovery-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pet-shop-discovery</name>
+	<name>petshop-discovery</name>
 	<description>Discovery Server for my petshop</description>
 	<properties>
 		<java.version>19</java.version>
