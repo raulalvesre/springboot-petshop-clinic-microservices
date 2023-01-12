@@ -30,9 +30,6 @@ public class JwtConfiguration {
     @Value("${security.jks.alias}")
     private String keyAlias;
 
-    @Value("${security.jks.private-key-passphrase}")
-    private String privateKeyPassphrase;
-
     public KeyStore keyStore() {
         byte[] jksFile = Base64.getMimeDecoder()
                 .decode(keyStoreValue);
