@@ -2,8 +2,17 @@ server:
   port: 8888
 
 spring:
+  application:
+    name: config-service
   cloud:
     config:
       server:
         git:
           uri: https://github.com/raulalvesre/petshop-properties
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
