@@ -1,7 +1,22 @@
+server:
+  port: ${PORT:8090}
+
 spring:
   application:
     name: auth-service
-  config:
-    import: configserver:http://localhost:8888
   profiles:
-    active: default
+    active: ${PROFILE:default}
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-service
+  config:
+    import: optional:configserver:config-service
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
