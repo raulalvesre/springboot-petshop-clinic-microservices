@@ -41,10 +41,67 @@ services:
       - petshop-discovery
     image: petshop-admin-srvc
     ports:
+      - "8091:8090"
+    environment:
+      PORT: 8090
+      DB_URL: petshop-db
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+  petshop-attendant-service:
+    depends_on:
+      - petshop-db
+      - petshop-config-server
+      - petshop-discovery
+    image: petshop-attendant-srvc
+    ports:
+      - "8092:8091"
+    environment:
+      PORT: 8091
+      DB_URL: petshop-db
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+  petshop-customer-service:
+    depends_on:
+      - petshop-db
+      - petshop-config-server
+      - petshop-discovery
+    image: petshop-customer-srvc
+    ports:
       - "8093:8092"
     environment:
       PORT: 8092
       DB_URL: petshop-db
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+  petshop-veterinarian-service:
+    depends_on:
+      - petshop-db
+      - petshop-config-server
+      - petshop-discovery
+    image: petshop-veterinarian-srvc
+    ports:
+      - "8094:8093"
+    environment:
+      PORT: 8093
+      DB_URL: petshop-db
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+  petshop-visit-service:
+    depends_on:
+      - petshop-db
+      - petshop-redis
+      - petshop-config-server
+      - petshop-discovery
+      - petshop-customer-service
+      - petshop-veterinarian-service
+    image: petshop-visit-srvc
+    ports:
+      - "8095:8094"
+    environment:
+      PORT: 8094
+      DB_URL: petshop-db
+      REDIS_HOST: petshop-redis
+      REDIS_PORT: 6379
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
 
 volumes:
