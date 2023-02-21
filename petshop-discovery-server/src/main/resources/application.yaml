@@ -3,5 +3,9 @@ eureka:
     fetch-registry: false
     register-with-eureka: false
 
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
 server:
   port: ${PORT:8761}

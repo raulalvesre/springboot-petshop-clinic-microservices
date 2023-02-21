@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  petshop-db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - petshop-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: rar432
+
+  petshop-redis:
+    image: redis
+    volumes:
+      - petshop-redis:/data
+    ports:
+      - "6379:6379"
+
+  petshop-discovery:
+    image: petshop-discovery-srvc
+    ports:
+      - "8761:8761"
+    environment:
+      PORT: 8761
+
+  petshop-config-server:
+    depends_on:
+      - petshop-discovery
+    image: petshop-config-srvc
+    ports:
+      - "8888:8888"
+    environment:
+      PORT: 8888
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+  petshop-admin-service:
+    depends_on:
+      - petshop-db
+      - petshop-config-server
+      - petshop-discovery
+    image: petshop-admin-srvc
+    ports:
+      - "8092:8092"
+    environment:
+      PORT: 8092
+      DB_URL: petshop-db
+      DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+
+volumes:
+  petshop-db:
+  petshop-redis:
