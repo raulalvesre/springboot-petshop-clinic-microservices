@@ -43,13 +43,13 @@ spring:
           filters:
             - SetStatus=403
 
-        - id: vet-service
-          uri: lb://vets-service
+        - id: veterinarian-service
+          uri: lb://veterinarian-service
           predicates:
             - Path=/api/veterinarian/**
 
-        - id: visits-service
-          uri: lb://visits-service
+        - id: visit-service
+          uri: lb://visit-service
           predicates:
             - Path=/api/visit/**
 

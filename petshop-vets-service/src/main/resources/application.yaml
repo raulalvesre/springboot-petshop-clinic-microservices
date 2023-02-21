@@ -14,7 +14,7 @@ server:
 
 spring:
   application:
-    name: vets-service
+    name: veterinarian-service
   cloud:
     config:
       discovery:

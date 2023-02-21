@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.raulalvesre</groupId>
-	<artifactId>petshop-vets-service</artifactId>
+	<artifactId>petshop-veterinarian-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>petshop-vets-service</name>
+	<name>petshop-veterinarian-service</name>
 	<description>A project to learn more about microservices</description>
 	<properties>
 		<java.version>19</java.version>

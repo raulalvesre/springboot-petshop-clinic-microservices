@@ -34,7 +34,7 @@ public class VeterinarianService {
                                BearerTokenWrapper tokenWrapper,
                                RedisTemplate<String, VeterinarianDto> vetTemplate,
                                RedisTemplate<String, Set<VeterinarianDto>> vetSetTemplate) {
-        this.webClient = webClientBuilder.baseUrl("http://vets-service/api/veterinarian")
+        this.webClient = webClientBuilder.baseUrl("http://veterinarian-service/api/veterinarian")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
 

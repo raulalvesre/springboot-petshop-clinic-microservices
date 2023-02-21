@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: visits-service
+    name: visit-service
   cloud:
     config:
       discovery:
