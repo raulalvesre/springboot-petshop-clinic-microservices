@@ -17,20 +17,34 @@ services:
     image: petshop-discovery-srvc
     environment:
       PORT: 8761
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-config-server:
     depends_on:
-      - petshop-discovery
+      petshop-discovery:
+        condition: service_healthy
     image: petshop-config-srvc
     environment:
       PORT: 8888
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8888/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-admin-service:
     depends_on:
-      - petshop-db
-      - petshop-config-server
-      - petshop-discovery
+      petshop-db:
+        condition: service_started
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
     image: petshop-admin-srvc
     ports:
       - "8091:8090"
@@ -38,48 +52,83 @@ services:
       PORT: 8090
       DB_URL: petshop-db
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8090/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-attendant-service:
     depends_on:
-      - petshop-db
-      - petshop-config-server
-      - petshop-discovery
+      petshop-db:
+        condition: service_started
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
     image: petshop-attendant-srvc
     environment:
       PORT: 8091
       DB_URL: petshop-db
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8091/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-customer-service:
     depends_on:
-      - petshop-db
-      - petshop-config-server
-      - petshop-discovery
+      petshop-db:
+        condition: service_started
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
     image: petshop-customer-srvc
     environment:
       PORT: 8092
       DB_URL: petshop-db
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8092/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-veterinarian-service:
     depends_on:
-      - petshop-db
-      - petshop-config-server
-      - petshop-discovery
+      petshop-db:
+        condition: service_started
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
     image: petshop-veterinarian-srvc
     environment:
       PORT: 8093
       DB_URL: petshop-db
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8093/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-visit-service:
     depends_on:
-      - petshop-db
-      - petshop-redis
-      - petshop-config-server
-      - petshop-discovery
-      - petshop-customer-service
-      - petshop-veterinarian-service
+      petshop-db:
+        condition: service_started
+      petshop-redis:
+        condition: service_started
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
+      petshop-customer-service:
+        condition: service_healthy
+      petshop-veterinarian-service:
+        condition: service_healthy
     image: petshop-visit-srvc
     environment:
       PORT: 8094
@@ -87,35 +136,65 @@ services:
       REDIS_HOST: petshop-redis
       REDIS_PORT: 6379
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8094/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-auth-service:
     depends_on:
-      - petshop-config-server
-      - petshop-discovery
-      - petshop-admin-service
-      - petshop-attendant-service
-      - petshop-customer-service
-      - petshop-veterinarian-service
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
+      petshop-admin-service:
+        condition: service_healthy
+      petshop-attendant-service:
+        condition: service_healthy
+      petshop-customer-service:
+        condition: service_healthy
+      petshop-veterinarian-service:
+        condition: service_healthy
     image: petshop-auth-srvc
     environment:
-      PORT: 8094
+      PORT: 8095
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:8095/api/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
   petshop-gateway:
     depends_on:
-      - petshop-config-server
-      - petshop-discovery
-      - petshop-admin-service
-      - petshop-attendant-service
-      - petshop-customer-service
-      - petshop-veterinarian-service
-      - petshop-auth-service
+      petshop-config-server:
+        condition: service_healthy
+      petshop-discovery:
+        condition: service_healthy
+      petshop-admin-service:
+        condition: service_healthy
+      petshop-attendant-service:
+        condition: service_healthy
+      petshop-customer-service:
+        condition: service_healthy
+      petshop-veterinarian-service:
+        condition: service_healthy
+      petshop-auth-service:
+        condition: service_healthy
+      petshop-visit-service:
+        condition: service_healthy
     image: petshop-gateway
     ports:
       - "7778:7777"
     environment:
       PORT: 7777
       DISCOVERY_SERVICE_URL: http://petshop-discovery:8761/eureka
+    healthcheck:
+      test: "curl --fail --silent localhost:7777/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 2s
+      retries: 10
 
 volumes:
   petshop-db:
