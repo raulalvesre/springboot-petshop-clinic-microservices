@@ -3,6 +3,8 @@ version: "3.8"
 services:
   petshop-db:
     image: postgres
+    ports:
+      - "5433:5432"
     volumes:
       - petshop-db:/var/lib/postgresql/data
     environment:
@@ -10,6 +12,8 @@ services:
 
   petshop-redis:
     image: redis
+    ports:
+      - "6380:6379"
     volumes:
       - petshop-redis:/data
 
