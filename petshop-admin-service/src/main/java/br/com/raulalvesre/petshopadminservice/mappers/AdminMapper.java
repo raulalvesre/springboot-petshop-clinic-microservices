@@ -12,38 +12,38 @@ public class AdminMapper {
 
     private final PasswordEncoder passwordEncoder;
 
-    public Admin toModel(AdminForm AdminForm) {
+    public Admin toModel(AdminForm form) {
         return Admin.builder()
-                .name(AdminForm.getName())
-                .email(AdminForm.getName())
-                .password(passwordEncoder.encode(AdminForm.getPassword()))
-                .cpf(AdminForm.getCpf())
-                .state(AdminForm.getAddress().getState())
-                .city(AdminForm.getAddress().getCity())
-                .address(AdminForm.getAddress().getAddress())
-                .neighbourhood(AdminForm.getAddress().getNeighbourhood())
-                .complement(AdminForm.getAddress().getComplement())
-                .number(AdminForm.getAddress().getNumber())
-                .cep(AdminForm.getAddress().getCep())
-                .phone(AdminForm.getPhone())
-                .birthDate(AdminForm.getBirthDate())
+                .name(form.getName())
+                .email(form.getEmail())
+                .password(passwordEncoder.encode(form.getPassword()))
+                .cpf(form.getCpf())
+                .state(form.getAddress().getState())
+                .city(form.getAddress().getCity())
+                .address(form.getAddress().getAddress())
+                .neighbourhood(form.getAddress().getNeighbourhood())
+                .complement(form.getAddress().getComplement())
+                .number(form.getAddress().getNumber())
+                .cep(form.getAddress().getCep())
+                .phone(form.getPhone())
+                .birthDate(form.getBirthDate())
                 .build();
     }
 
-    public void merge(Admin Admin, AdminForm AdminForm) {
-        Admin.setName(AdminForm.getName());
-        Admin.setEmail(AdminForm.getEmail());
-        Admin.setPassword(passwordEncoder.encode(AdminForm.getPassword()));
-        Admin.setCpf(AdminForm.getCpf());
-        Admin.setState(AdminForm.getAddress().getState());
-        Admin.setCity(AdminForm.getAddress().getCity());
-        Admin.setAddress(AdminForm.getAddress().getAddress());
-        Admin.setNeighbourhood(AdminForm.getAddress().getNeighbourhood());
-        Admin.setComplement(AdminForm.getAddress().getComplement());
-        Admin.setNumber(AdminForm.getAddress().getNumber());
-        Admin.setCpf(AdminForm.getCpf());
-        Admin.setPhone(AdminForm.getPhone());
-        Admin.setBirthDate(AdminForm.getBirthDate());
+    public void merge(Admin admin, AdminForm form) {
+        admin.setName(form.getName());
+        admin.setEmail(form.getEmail());
+        admin.setPassword(passwordEncoder.encode(form.getPassword()));
+        admin.setCpf(form.getCpf());
+        admin.setState(form.getAddress().getState());
+        admin.setCity(form.getAddress().getCity());
+        admin.setAddress(form.getAddress().getAddress());
+        admin.setNeighbourhood(form.getAddress().getNeighbourhood());
+        admin.setComplement(form.getAddress().getComplement());
+        admin.setNumber(form.getAddress().getNumber());
+        admin.setCpf(form.getCpf());
+        admin.setPhone(form.getPhone());
+        admin.setBirthDate(form.getBirthDate());
     }
 
 }
