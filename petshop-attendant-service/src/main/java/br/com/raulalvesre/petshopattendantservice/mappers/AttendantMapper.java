@@ -15,7 +15,7 @@ public class AttendantMapper {
     public Attendant toModel(AttendantForm attendantForm) {
         return Attendant.builder()
                 .name(attendantForm.getName())
-                .email(attendantForm.getName())
+                .email(attendantForm.getEmail())
                 .password(passwordEncoder.encode(attendantForm.getPassword()))
                 .cpf(attendantForm.getCpf())
                 .state(attendantForm.getAddress().getState())

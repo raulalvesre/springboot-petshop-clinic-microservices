@@ -15,7 +15,7 @@ public class VeterinarianMapper {
     public Veterinarian toModel(VeterinarianForm veterinarianForm) {
         return Veterinarian.builder()
                 .name(veterinarianForm.getName())
-                .email(veterinarianForm.getName())
+                .email(veterinarianForm.getEmail())
                 .password(passwordEncoder.encode(veterinarianForm.getPassword()))
                 .cpf(veterinarianForm.getCpf())
                 .crmv(veterinarianForm.getCrmv())
