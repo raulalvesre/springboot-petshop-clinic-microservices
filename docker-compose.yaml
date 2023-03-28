@@ -18,6 +18,7 @@ services:
       - petshop-redis:/data
 
   petshop-discovery:
+    build: ./petshop-discovery-server
     image: petshop-discovery-srvc
     environment:
       PORT: 8761
@@ -31,6 +32,7 @@ services:
     depends_on:
       petshop-discovery:
         condition: service_healthy
+    build: ./petshop-config-server
     image: petshop-config-srvc
     environment:
       PORT: 8888
@@ -49,6 +51,7 @@ services:
         condition: service_healthy
       petshop-discovery:
         condition: service_healthy
+    build: ./petshop-admin-service
     image: petshop-admin-srvc
     ports:
       - "8091:8090"
@@ -70,6 +73,7 @@ services:
         condition: service_healthy
       petshop-discovery:
         condition: service_healthy
+    build: ./petshop-attendant-service
     image: petshop-attendant-srvc
     environment:
       PORT: 8091
@@ -89,6 +93,7 @@ services:
         condition: service_healthy
       petshop-discovery:
         condition: service_healthy
+    build: ./petshop-customer-service
     image: petshop-customer-srvc
     environment:
       PORT: 8092
@@ -108,6 +113,7 @@ services:
         condition: service_healthy
       petshop-discovery:
         condition: service_healthy
+    build: ./petshop-veterinarian-service
     image: petshop-veterinarian-srvc
     environment:
       PORT: 8093
@@ -133,6 +139,7 @@ services:
         condition: service_healthy
       petshop-veterinarian-service:
         condition: service_healthy
+    build: ./petshop-visit-service
     image: petshop-visit-srvc
     environment:
       PORT: 8094
@@ -160,6 +167,7 @@ services:
         condition: service_healthy
       petshop-veterinarian-service:
         condition: service_healthy
+    build: ./petshop-auth-service
     image: petshop-auth-srvc
     environment:
       PORT: 8095
@@ -188,6 +196,7 @@ services:
         condition: service_healthy
       petshop-visit-service:
         condition: service_healthy
+    build: ./petshop-gateway
     image: petshop-gateway
     ports:
       - "7778:7777"
