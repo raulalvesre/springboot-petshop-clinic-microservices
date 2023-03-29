@@ -1,6 +1,5 @@
-# 🚀 Microservices Project
-
-This project is a set of microservices built using Spring Boot. Each microservice is designed to handle a specific business capability, such as user management or order processing. The project was built as a learning exercise to gain experience with modern microservices architecture and cloud-native technologies.
+# 🚀 Pet-shop Clinic Microservices Project
+This project is a set of microservices built using Spring Boot. Each microservice is designed to handle a specific business capability, such as user management or visit management. The project was built as a learning exercise to gain experience with modern microservices architecture and cloud-native technologies.
 
 ## 🛠️ Technologies Used
 
