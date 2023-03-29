@@ -25,8 +25,9 @@ The following technologies were used in the project:
 
 To get started with the project, you'll need to have the following prerequisites installed on your system:
 
-- ☕ Java 11 or later
+- ☕ Java 19 or later
 - 🐳 Docker
+- 🐳 Docker Compose
 
 Once you have the prerequisites installed, you can build and run the microservices using the following commands:
 
@@ -38,9 +39,12 @@ This command will start up the microservices in Docker containers.
 
 After the microservices are up and running, you can access them using the following URLs:
 
-- 🧑‍🦱 User service: http://localhost:8081
-- 📦 Order service: http://localhost:8082
-- 📦 Inventory service: http://localhost:8083
+- 🔐 Auth service: http://localhost:7778/api/auth
+- 🤵 Admin service: http://localhost:7778/api/admin
+- 🧑‍🦱 Customer service: http://localhost:7778/api/customer
+- 👨‍💼 Attendant service: http://localhost:7778/api/attendant
+- 👩‍⚕️ Veterinarian service: http://localhost:7778/api/veterinarian
+- 🏥 Visit service: http://localhost:7778/api/visit
 
 ## 🎓 Learning Goals
 
